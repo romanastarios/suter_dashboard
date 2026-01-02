@@ -1,7 +1,8 @@
 {
   "test_name": "Project Lifecycle Workflow (SUD)",
-  "started_at": "2026-01-02 18:35:56 UTC",
-  "duration": "00 hr 01 min 36 sec",
+  "started_at": "2026-01-02 19:37:30 UTC",
+  "duration": "00 hr 01 min 35 sec",
+  "video_file": "81a1972e8ebbd6940109c4dd1f68177f.webm",
   "overall_status": "pass",
   "steps": [
     {

@@ -1,7 +1,8 @@
 {
   "test_name": "Create Proposal Cycle (SET)",
-  "started_at": "2026-01-02 18:42:39 UTC",
-  "duration": "00 hr 00 min 56 sec",
+  "started_at": "2026-01-02 19:25:07 UTC",
+  "duration": "00 hr 00 min 55 sec",
+  "video_file": "ce6b47ceb745f8164a61c1cad674d5bf.webm",
   "overall_status": "pass",
   "steps": [
     {

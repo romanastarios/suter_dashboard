@@ -1,7 +1,8 @@
 {
   "test_name": "Create Proposal Cycle (E4R)",
-  "started_at": "2026-01-02 18:40:37 UTC",
-  "duration": "00 hr 02 min 01 sec",
+  "started_at": "2026-01-02 19:22:46 UTC",
+  "duration": "00 hr 02 min 21 sec",
+  "video_file": "400b4a17ec9f7e9e4a49921ccb7b33d3.webm",
   "overall_status": "pass",
   "steps": [
     {
