@@ -143,7 +143,7 @@ async function discoverArtifactFolders(){
 }
 
 function extractTestName(folderName){
-  return folderName.replace(/_\d{2}_\d{2}_\d{4}_\d{2}_\d{2}_\d{2}$/, '');
+  return folderName;
 }
 
 function normalizeTestName(name){
