@@ -31,6 +31,9 @@ const summary   = document.getElementById("summary");
 const emptyState = document.getElementById("emptyState");
 const testsList = document.getElementById("testsList");
 
+let currentFilter = null;
+let allTests = [];
+
 /*************************************************
  * HELPERS
  *************************************************/
@@ -283,19 +286,19 @@ function renderSummary(tests){
     : 'var(--border)';
 
   summary.innerHTML = `
-    <div class="stat-card">
+    <div class="stat-card ${currentFilter === null ? 'active' : ''}" data-filter="all">
       <div class="stat-label">Total</div>
       <div class="stat-value">${total}</div>
     </div>
-    <div class="stat-card pass">
+    <div class="stat-card pass ${currentFilter === 'pass' ? 'active' : ''}" data-filter="pass">
       <div class="stat-label">Pass</div>
       <div class="stat-value">${pass}</div>
     </div>
-    <div class="stat-card fail">
+    <div class="stat-card fail ${currentFilter === 'fail' ? 'active' : ''}" data-filter="fail">
       <div class="stat-label">Fail</div>
       <div class="stat-value">${fail}</div>
     </div>
-    <div class="stat-card not-tested">
+    <div class="stat-card not-tested ${currentFilter === 'not_tested' ? 'active' : ''}" data-filter="not_tested">
       <div class="stat-label">Not Tested</div>
       <div class="stat-value">${nt}</div>
     </div>
@@ -308,6 +311,14 @@ function renderSummary(tests){
       </div>
     </div>
   `;
+  
+  document.querySelectorAll('.stat-card[data-filter]').forEach(card => {
+    card.addEventListener('click', () => {
+      const filter = card.dataset.filter;
+      currentFilter = filter === 'all' ? null : filter;
+      applyFilter();
+    });
+  });
 }
 
 function chevron(){
@@ -323,7 +334,21 @@ function chevron(){
   `;
 }
 
+function applyFilter(){
+  const cards = testsList.querySelectorAll('.test-card');
+  cards.forEach(card => {
+    const status = card.dataset.status;
+    if (currentFilter === null || status === currentFilter){
+      card.classList.remove('filtered-out');
+    } else {
+      card.classList.add('filtered-out');
+    }
+  });
+  renderSummary(allTests);
+}
+
 function renderTests(tests){
+  allTests = tests;
   testsList.innerHTML = "";
 
   if (!tests.length){
@@ -334,6 +359,25 @@ function renderTests(tests){
 
   emptyState.classList.add("hidden");
   renderSummary(tests);
+  
+  const totalDuration = calculateTotalDuration(tests.filter(t => normalizeStatus(t.overall_status) !== "not_tested"));
+  
+  const testsWrapper = document.createElement("div");
+  testsWrapper.className = "tests-wrapper";
+  
+  testsWrapper.innerHTML = `
+    <div class="tests-header">
+      <div>Status</div>
+      <div>Name</div>
+      <div class="col-duration">Duration (Total: ${escapeHtml(totalDuration)})</div>
+      <div class="col-started">Time</div>
+      <div></div>
+    </div>
+  `;
+  
+  const testsContainer = document.createElement("div");
+  testsContainer.className = "tests";
+  testsWrapper.appendChild(testsContainer);
 
   for (const t of tests){
     const status = normalizeStatus(t.overall_status);
@@ -346,9 +390,11 @@ function renderTests(tests){
 
     const videoSrc = t.video_file;
     const isNotTested = status === "not_tested";
+    const kyivTime = convertToKyivTime(t.started_at);
 
     const card = document.createElement("div");
     card.className = "test-card";
+    card.dataset.status = status;
     if (isNotTested) card.classList.add("not-expandable");
 
     card.innerHTML = `
@@ -356,7 +402,7 @@ function renderTests(tests){
         <div class="badge ${status}">${status.replace("_"," ").toUpperCase()}</div>
         <div class="test-name">${escapeHtml(t.test_name || "Unnamed test")}</div>
         <div class="meta col-duration">${escapeHtml(formatDuration(t.duration))}</div>
-        <div class="meta col-started">${escapeHtml(t.started_at || "-")}</div>
+        <div class="meta col-started">${escapeHtml(kyivTime)}</div>
         ${isNotTested ? '<div class="chev"></div>' : `<div class="chev">${chevron()}</div>`}
       </div>
 
@@ -412,8 +458,10 @@ function renderTests(tests){
       });
     }
 
-    testsList.appendChild(card);
+    testsContainer.appendChild(card);
   }
+  
+  testsList.appendChild(testsWrapper);
 }
 
 /*************************************************
@@ -475,6 +523,65 @@ function formatDuration(duration){
   }
   
   return duration;
+}
+
+function parseDurationToSeconds(duration){
+  if (!duration || duration === "-") return 0;
+  
+  const match = duration.match(/(\d+)\s*hr\s*(\d+)\s*min\s*(\d+)\s*sec/);
+  if (!match) return 0;
+  
+  const hours = parseInt(match[1]);
+  const minutes = parseInt(match[2]);
+  const seconds = parseInt(match[3]);
+  
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+function formatTotalDuration(totalSeconds){
+  if (totalSeconds === 0) return "-";
+  
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  
+  if (hours === 0 && minutes === 0){
+    return `${seconds} sec`;
+  }
+  
+  if (hours === 0){
+    return `${minutes} min ${seconds} sec`;
+  }
+  
+  return `${hours} hr ${minutes} min ${seconds} sec`;
+}
+
+function calculateTotalDuration(tests){
+  const totalSeconds = tests.reduce((sum, test) => {
+    return sum + parseDurationToSeconds(test.duration);
+  }, 0);
+  return formatTotalDuration(totalSeconds);
+}
+
+function convertToKyivTime(utcTimeString){
+  if (!utcTimeString || utcTimeString === "-") return "-";
+  
+  try {
+    const date = new Date(utcTimeString);
+    if (isNaN(date.getTime())) return utcTimeString;
+    
+    return new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Kyiv",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    }).format(date).replace(",", "");
+  } catch (err) {
+    return utcTimeString;
+  }
 }
 
 /*************************************************
