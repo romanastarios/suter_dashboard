@@ -128,21 +128,10 @@ async function fetchJson(url){
 
 async function discoverArtifactFolders(){
   try{
-    const response = await fetch(ARTIFACTS_FOLDER);
-    const html = await response.text();
-    
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const links = Array.from(doc.querySelectorAll('a'));
-    
-    const folders = links
-      .map(a => a.getAttribute('href'))
-      .filter(href => href && href.endsWith('/') && href !== '../')
-      .map(href => href.replace(/\/$/, ''));
-    
-    return folders;
+    const index = await fetchJson('./artifacts-index.json');
+    return index.folders || [];
   }catch(err){
-    console.error('Failed to discover artifact folders:', err);
+    console.error('Failed to load artifacts index:', err);
     return [];
   }
 }
@@ -173,39 +162,15 @@ function normalizeArtifactPath(artifactPath, folderName){
   return artifactPath;
 }
 
-async function findJsonInFolder(folder){
-  try{
-    const response = await fetch(`${ARTIFACTS_FOLDER}/${folder}`);
-    const html = await response.text();
-    
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const links = Array.from(doc.querySelectorAll('a'));
-    
-    const jsonFile = links
-      .map(a => a.getAttribute('href'))
-      .find(href => href && href.endsWith('.json'));
-    
-    return jsonFile;
-  }catch(err){
-    return null;
-  }
-}
-
 async function loadTests(){
-  let manifest = null;
-  try{
-    manifest = await fetchJson('./data/manifest.json');
-  }catch(err){
-    console.warn('No manifest.json found, using artifacts only');
-  }
-
-  const folders = await discoverArtifactFolders();
+  const artifactsIndex = await discoverArtifactFolders();
   const artifactTests = new Map();
 
-  for (const folder of folders){
+  for (const artifact of artifactsIndex){
     try{
-      const jsonFile = await findJsonInFolder(folder);
+      const folder = artifact.name;
+      const jsonFile = artifact.json_file;
+      
       if (!jsonFile){
         throw new Error('No JSON file found');
       }
@@ -227,32 +192,24 @@ async function loadTests(){
       
       if (testData.video_file){
         testData.video_file = `${ARTIFACTS_FOLDER}/${folder}/videos/${testData.video_file}`;
-      }else{
-        try{
-          const videosResponse = await fetch(`${ARTIFACTS_FOLDER}/${folder}/videos/`);
-          const videosHtml = await videosResponse.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(videosHtml, 'text/html');
-          const videoLink = Array.from(doc.querySelectorAll('a'))
-            .map(a => a.getAttribute('href'))
-            .find(href => href && href.endsWith('.webm'));
-          
-          if (videoLink){
-            const cleanVideoName = videoLink.replace(/^.*\//, '');
-            testData.video_file = `${ARTIFACTS_FOLDER}/${folder}/videos/${cleanVideoName}`;
-          }
-        }catch(err){
-          console.warn(`No video found for ${folder}`);
-        }
+      }else if (artifact.video_file){
+        testData.video_file = `${ARTIFACTS_FOLDER}/${folder}/videos/${artifact.video_file}`;
       }
       
       artifactTests.set(testName, testData);
     }catch(err){
-      console.warn(`Failed to load test from ${folder}:`, err);
+      console.warn(`Failed to load test from ${artifact.name}:`, err);
     }
   }
 
   const results = [];
+
+  let manifest = null;
+  try{
+    manifest = await fetchJson('./data/manifest.json');
+  }catch(err){
+    console.warn('No manifest.json found, using artifacts only');
+  }
 
   if (manifest && manifest.tests && Array.isArray(manifest.tests)){
     const manifestTestNames = new Set();

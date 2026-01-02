@@ -54,9 +54,24 @@ artifacts/
 
 ### Workflow
 
+**For Local Development:**
 1. Drop entire artifact folder (with timestamp) into `/artifacts`
 2. Refresh dashboard - tests appear automatically
 3. No manual file copying or configuration needed
+
+**For GitHub Pages Deployment:**
+1. Drop artifact folders into `/artifacts`
+2. Generate artifacts index:
+   ```bash
+   node generate-artifacts-index.js
+   ```
+3. Commit and push:
+   ```bash
+   git add .
+   git commit -m "Update test results"
+   git push
+   ```
+4. GitHub Pages will automatically update
 
 ### Features
 
@@ -66,8 +81,12 @@ artifacts/
 - ✅ Clean, minimal UI
 - ✅ Expandable test details
 - ✅ Screenshot links
-- ✅ Local caching
+- ✅ Video playback with fullscreen
+- ✅ Manifest integration (shows "Not Tested" for missing tests)
+- ✅ GitHub Pages compatible
 
-## Erase Data
+## Deployment
 
-Click "Erase" button and enter password: `6560`
+This dashboard is deployed at: https://romanastarios.github.io/suter_dashboard/
+
+The `artifacts-index.json` file is required for GitHub Pages to work since static hosting doesn't support directory listing.

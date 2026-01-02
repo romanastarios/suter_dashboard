@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-01-02T18:16:22.458Z",
+  "folders": [
+    {
+      "name": "create_offer_div_02_01_2026_16_47_59",
+      "json_file": "create_offer_div.json",
+      "video_file": "a3440e0ffc5de7c867ccf0b520a9d4b7.webm"
+    },
+    {
+      "name": "create_offer_e4r_02_01_2026_16_41_47",
+      "json_file": "create_offer_e4r.json",
+      "video_file": "7df0d2828c63aca20ad5375787cfe817.webm"
+    },
+    {
+      "name": "create_offer_hag_02_01_2026_16_46_12",
+      "json_file": "create_offer_hag.json",
+      "video_file": "99035f8690c53ebbdea3fc8cf5de7e57.webm"
+    },
+    {
+      "name": "create_offer_hku_02_01_2026_16_43_45",
+      "json_file": "create_offer_hku.json",
+      "video_file": "0f62ec19bf02f26f5671cc7bbd4d99c2.webm"
+    },
+    {
+      "name": "create_offer_set_02_01_2026_16_42_49",
+      "json_file": "create_offer_set.json",
+      "video_file": "637f86ef001db0fcde83a871ab6bbea9.webm"
+    },
+    {
+      "name": "create_offer_sud_02_01_2026_16_47_05",
+      "json_file": "create_offer_sud.json",
+      "video_file": "9d509b4738224ec408a636a0432b24d9.webm"
+    },
+    {
+      "name": "create_offer_sur_02_01_2026_16_50_19",
+      "json_file": "create_offer_sur.json",
+      "video_file": "834c53d51ee1e26520f7ee38a3b415ee.webm"
+    }
+  ]
+}
