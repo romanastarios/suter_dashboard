@@ -22,6 +22,12 @@
 
   <!-- Main app -->
   <div id="app" class="app hidden">
+    <!-- Loading spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading tests...</div>
+    </div>
+
     <header class="topbar">
       <div class="topbar-left">
         <h1 class="title">AUTOMATED TESTS</h1>
@@ -70,7 +76,7 @@
         <div class="empty-subtitle">Test results will appear here once available.</div>
       </div>
 
-      <div id="testsList" class="tests"></div>
+      <div id="testsList"></div>
     </main>
 
     <footer class="footer">

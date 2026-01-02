@@ -30,6 +30,7 @@ const moonIcon = document.getElementById("moonIcon");
 const summary   = document.getElementById("summary");
 const emptyState = document.getElementById("emptyState");
 const testsList = document.getElementById("testsList");
+const loadingSpinner = document.getElementById("loadingSpinner");
 
 let currentFilter = null;
 let allTests = [];
@@ -369,7 +370,7 @@ function renderTests(tests){
     <div class="tests-header">
       <div>Status</div>
       <div>Name</div>
-      <div class="col-duration">Duration (Total: ${escapeHtml(totalDuration)})</div>
+      <div class="col-duration">${escapeHtml(totalDuration)}</div>
       <div class="col-started">Time</div>
       <div></div>
     </div>
@@ -602,6 +603,7 @@ function handleLogin(){
  * INIT
  *************************************************/
 async function init(){
+  if (loadingSpinner) loadingSpinner.classList.remove("hidden");
   try{
     const tests = await loadTests();
     localStorage.setItem(LS_CACHE, JSON.stringify(tests));
@@ -611,6 +613,7 @@ async function init(){
     renderTests(cached);
   }
   updateLastDeployed();
+  if (loadingSpinner) loadingSpinner.classList.add("hidden");
 }
 
 accessBtn.addEventListener("click", handleLogin);
