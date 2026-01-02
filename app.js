@@ -10,7 +10,6 @@ const ARTIFACTS_FOLDER = "./artifacts";
 const LS_AUTH  = "suter_dashboard_authed";
 const LS_CACHE = "suter_dashboard_tests_cache";
 const LS_THEME = "suter_dashboard_theme";
-const LS_LAST_DEPLOYED = "lastDeployed";
 
 /*************************************************
  * DOM
@@ -126,9 +125,15 @@ async function fetchJson(url){
   return res.json();
 }
 
+let deploymentTimestamp = null;
+
 async function discoverArtifactFolders(){
   try{
     const index = await fetchJson('./artifacts-index.json');
+    if (index.generated_at){
+      deploymentTimestamp = new Date(index.generated_at);
+    }
+    console.log('Loaded artifacts index:', index);
     return index.folders || [];
   }catch(err){
     console.error('Failed to load artifacts index:', err);
@@ -383,18 +388,38 @@ function renderTests(tests){
 /*************************************************
  * LAST DEPLOYED
  *************************************************/
-function updateLastDeployed(){
-  const timestamp = localStorage.getItem(LS_LAST_DEPLOYED);
-  if (timestamp){
-    const date = new Date(timestamp);
-    const formatted = new Intl.DateTimeFormat("en-GB", {
+function formatRelativeTime(date){
+  const now = new Date();
+  const diffMs = now - date;
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHr = Math.floor(diffMin / 60);
+  const diffDays = Math.floor(diffHr / 24);
+  
+  if (diffDays >= 1){
+    return new Intl.DateTimeFormat("en-GB", {
       day: "2-digit",
       month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
+      year: "numeric"
     }).format(date);
-    lastDeployed.textContent = formatted;
+  }
+  
+  if (diffHr >= 1){
+    const remainingMin = diffMin % 60;
+    return `${diffHr}h ${remainingMin}m ago`;
+  }
+  
+  if (diffMin >= 1){
+    const remainingSec = diffSec % 60;
+    return `${diffMin}m ${remainingSec}s ago`;
+  }
+  
+  return `${diffSec}s ago`;
+}
+
+function updateLastDeployed(){
+  if (deploymentTimestamp){
+    lastDeployed.textContent = formatRelativeTime(deploymentTimestamp);
   }else{
     lastDeployed.textContent = "--";
   }
@@ -442,7 +467,6 @@ async function init(){
   try{
     const tests = await loadTests();
     localStorage.setItem(LS_CACHE, JSON.stringify(tests));
-    localStorage.setItem(LS_LAST_DEPLOYED, new Date().toISOString());
     renderTests(tests);
   }catch{
     const cached = JSON.parse(localStorage.getItem(LS_CACHE) || "[]");
