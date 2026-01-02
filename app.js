@@ -1,7 +1,7 @@
 /*************************************************
  * CONFIG
  *************************************************/
-const ACCESS_PASSWORD = "12345";
+const ACCESS_PASSWORD = "lupfig";
 
 // Artifacts folder location
 const ARTIFACTS_FOLDER = "./artifacts";
@@ -451,7 +451,7 @@ function formatDuration(duration){
  * AUTH
  *************************************************/
 function handleLogin(){
-  if (accessPasswordInput.value === ACCESS_PASSWORD){
+  if (accessPasswordInput.value.toLowerCase() === ACCESS_PASSWORD){
     setAuthed(true);
     loginOverlay.classList.add("hidden");
     app.classList.remove("hidden");
