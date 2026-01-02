@@ -1,10 +1,10 @@
-# Suter Technologies - Automated Tests Dashboard
+# Automated Tests Dashboard
 
-A clean, TestRail-inspired dashboard for viewing automated test results from Suter Technologies' test automation suite.
+A clean, TestRail-inspired dashboard for viewing automated test results.
 
 ## Overview
 
-This dashboard displays the results of automated end-to-end tests for the Suter Technologies web application. It provides a clear overview of test execution status across different test suites.
+This dashboard displays the results of automated end-to-end tests for the Suter web application. It provides a clear overview of test execution status across different test suites.
 
 ## Features
 
