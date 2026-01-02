@@ -1,0 +1,17 @@
+{
+  "tests": [
+    "test_create_offer_div.json",
+    "create_offer_e4r.json",
+    "create_offer_hag.json",
+    "create_offer_hku.json",
+    "create_offer_set.json",
+    "create_offer_sud.json",
+    "create_offer_sur.json",
+
+    "test_project_lifecycle_e4r.json",
+    "test_project_lifecycle_hag.json",
+    "test_project_lifecycle_set.json",
+    "test_project_lifecycle_sud.json",
+    "test_project_lifecycle_sur.json"
+  ]
+}

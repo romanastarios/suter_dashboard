@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SUTER TECHNOLOGIES AUTOMATED TESTS</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Login overlay -->
+  <div id="loginOverlay" class="overlay">
+    <div class="overlay-card">
+      <div class="overlay-title">SUTER TECHNOLOGIES</div>
+      <div class="overlay-subtitle">Automated Tests Dashboard</div>
+
+      <label class="field-label" for="accessPassword">Enter access password</label>
+      <div class="field-row">
+        <input id="accessPassword" type="password" placeholder="Password" autocomplete="current-password" />
+        <button id="accessBtn" class="btn btn-primary">Enter</button>
+      </div>
+
+      <div id="loginError" class="error" aria-live="polite"></div>
+      <div class="overlay-hint">Note: This is a static site gate (client-side).</div>
+    </div>
+  </div>
+
+  <!-- Main app -->
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="title">SUTER TECHNOLOGIES AUTOMATED TESTS</h1>
+      </div>
+
+      <div class="topbar-right">
+        <div class="timebox">
+          <span>Lupfig</span>
+          <span id="lupfigClock" class="timebox-time">--:--:--</span>
+        </div>
+
+        <div class="timebox">
+          <span>Kyiv</span>
+          <span id="kyivClock" class="timebox-time">--:--:--</span>
+        </div>
+
+        <div class="timebox">
+          <span>Last Deployed</span>
+          <span id="lastDeployed" class="timebox-time">--</span>
+        </div>
+
+        <button id="themeToggle" class="theme-toggle" title="Toggle dark mode">
+          <svg id="sunIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="moonIcon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="summary" class="summary"></div>
+
+      <div id="emptyState" class="empty hidden">
+        <div class="empty-title">No tests found</div>
+        <div class="empty-subtitle">Test results will appear here once available.</div>
+      </div>
+
+      <div id="testsList" class="tests"></div>
+    </main>
+
+    <footer class="footer">
+      <span>Automated test results dashboard</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
