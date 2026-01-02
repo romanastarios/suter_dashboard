@@ -266,6 +266,22 @@ function renderSummary(tests){
   const fail  = tests.filter(t => normalizeStatus(t.overall_status) === "fail").length;
   const nt    = total - pass - fail;
 
+  const passPercent = total > 0 ? Math.round((pass / total) * 100) : 0;
+  const failPercent = total > 0 ? Math.round((fail / total) * 100) : 0;
+  const ntPercent = total > 0 ? 100 - passPercent - failPercent : 0;
+
+  const passDeg = (pass / total) * 360;
+  const failDeg = (fail / total) * 360;
+  const ntDeg = (nt / total) * 360;
+
+  const pieGradient = total > 0 
+    ? `conic-gradient(
+        var(--pass) 0deg ${passDeg}deg,
+        var(--fail) ${passDeg}deg ${passDeg + failDeg}deg,
+        var(--not-tested) ${passDeg + failDeg}deg 360deg
+      )`
+    : 'var(--border)';
+
   summary.innerHTML = `
     <div class="stat-card">
       <div class="stat-label">Total</div>
@@ -282,6 +298,14 @@ function renderSummary(tests){
     <div class="stat-card not-tested">
       <div class="stat-label">Not Tested</div>
       <div class="stat-value">${nt}</div>
+    </div>
+    <div class="pie-chart-container">
+      <div class="pie-chart" style="background: ${pieGradient}"></div>
+      <div class="pie-legend">
+        ${pass > 0 ? `<div class="pie-legend-item"><span class="pie-dot pass"></span>${passPercent}% Pass</div>` : ''}
+        ${fail > 0 ? `<div class="pie-legend-item"><span class="pie-dot fail"></span>${failPercent}% Fail</div>` : ''}
+        ${nt > 0 ? `<div class="pie-legend-item"><span class="pie-dot not-tested"></span>${ntPercent}% Not Tested</div>` : ''}
+      </div>
     </div>
   `;
 }

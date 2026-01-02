@@ -170,6 +170,56 @@ html, body {
   border-color: rgba(106, 115, 125, 0.3);
 }
 
+.pie-chart-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.pie-chart {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.pie-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pie-dot.pass {
+  background: var(--pass);
+}
+
+.pie-dot.fail {
+  background: var(--fail);
+}
+
+.pie-dot.not-tested {
+  background: var(--not-tested);
+}
+
 .stat-label {
   font-size: 12px;
   color: var(--text-secondary);
